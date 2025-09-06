@@ -6,6 +6,10 @@ import 'package:get/get_core/src/get_main.dart';
 
 class AuthService{
 
+  User? getCurrentUser(){
+    return FirebaseAuth.instance.currentUser;
+  }
+
   final ProfileController profileController=Get.put(ProfileController());
 
   createUserAccountWithUserAndPassword(String userEmail,String userPassword,String name)async{

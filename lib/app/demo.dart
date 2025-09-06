@@ -41,9 +41,8 @@ class _DemoScreenState extends State<DemoScreen> {
                     Text(people[index].description)
                   ],
                 );
-
-
-              },),
+              },
+              ),
             ),
           ],
         ),
