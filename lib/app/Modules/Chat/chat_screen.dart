@@ -29,6 +29,43 @@ class _ChatScreenState extends State<ChatScreen> {
 
   }
 
+  FocusNode myFocusNode=FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    myFocusNode.addListener((){
+      if(myFocusNode.hasFocus){
+        Future.delayed(const Duration(milliseconds: 500),()=>scrollDown());
+      }
+    });
+
+    //Scroll Down Automtically when the chat loads
+    Future.delayed(
+        const Duration(milliseconds: 500),
+        ()=>scrollDown()
+    );
+
+  }
+
+  @override
+  void dispose() {
+   myFocusNode.dispose();
+   messageController.dispose();
+    super.dispose();
+  }
+
+  final ScrollController scrollController=ScrollController();
+  scrollDown(){
+    scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: Duration(seconds: 1 ),
+        curve: Curves.easeInOut
+    );
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +107,7 @@ class _ChatScreenState extends State<ChatScreen> {
           }
 
           return ListView(
+            controller: scrollController,
             children: snapshot.data!.docs.map((doc)=>buildMessageItem(doc)).toList()
           );
 
@@ -100,10 +138,12 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget buildUserInput(){
     return Row(
       children: [
-        Expanded(child: TextField(
+        Expanded(
+            child: TextField(
           controller: messageController,
+          focusNode: myFocusNode,
           decoration: InputDecoration(
-            hintText: "Type a message"
+            hintText: "Type a message",
           ),
         )),
         IconButton(onPressed: sendMessage, icon:Icon(Icons.send))
